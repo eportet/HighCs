@@ -43,6 +43,12 @@ CartVector operator-(CartPoint p1, CartPoint p2)
 	return CartVector(p1.x - p2.x, p1.y - p2.y);
 }
 
+// Overload == operator for p1 == p2
+bool operator==(CartPoint p1, CartPoint p2)
+{
+	return (p1.x == p2.x && p1.y == p2.y);
+}
+
 // Obtain the shortest using pythagorean theorem
 double cart_distance(CartPoint p1, CartPoint p2)
 {

@@ -8,10 +8,6 @@
 #define GAMECOMMAND_H
 
 #include "Model.h"
-#include "View.h"
-#include <iostream>
-
-using namespace std;
 
 // Command functions
 void do_go_command(Model&);
@@ -22,5 +18,9 @@ void do_port_command(Model&);
 void do_hide_command(Model&);
 void do_dock_command(Model&);
 void do_anchor_command(Model&);
+void do_plunder_command(Model&);
+void do_new_command(Model&);
+void do_save_command(Model&);
+void do_restore_command(Model&);
 
 #endif

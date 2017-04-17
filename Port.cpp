@@ -5,7 +5,10 @@
 // Date: November 21, 2015
 
 #include <iostream>
+#include <fstream>
 #include "Port.h"
+#include "GameObject.h"
+
 using namespace std;
 
 //				//
@@ -85,4 +88,17 @@ void Port::show_status()
 	GameObject::show_status();
 	cout << " containing supplies " << inventory << endl;
 }
+
+void Port::save(ofstream& file)
+{
+	GameObject::save(file);
+	file << inventory;
+}
+
+void Port::restore(ifstream& file, Model& model)
+{
+	GameObject::restore(file, model);
+	file >> inventory;
+}
+
 

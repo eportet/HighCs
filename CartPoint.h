@@ -21,6 +21,7 @@ public:
 	friend ostream& operator<<(ostream &out, CartPoint& p1);
 	friend CartPoint operator+(CartPoint p1, CartVector v1);
 	friend CartVector operator-(CartPoint p1, CartPoint p2);
+	friend bool operator==(CartPoint p1, CartPoint p2);
 };
 
 double cart_distance (CartPoint, CartPoint);

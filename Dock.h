@@ -6,10 +6,11 @@
 
 #ifndef DOCK_H
 #define DOCK_H
-#include <iostream>
+
 #include "GameObject.h"
-#include "Sailor.h"
-using namespace std;
+
+class Sailor;
+class Model;
 
 class Dock: public GameObject
 {
@@ -25,8 +26,20 @@ public:
 	// Public member functions
 	bool dock_boat(Sailor*);
 	bool set_sail(Sailor*);
+	
+	double get_berths();
+
 	bool update();
 	void show_status();
+
+	void save(ofstream&);
+	void restore(ifstream&, Model&);
+
+	// From GameObject
+	// CartPoint get_location();
+	// int get_id();
+	// char get_display_code();
+	// char get_state();
 };
 
 #endif

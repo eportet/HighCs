@@ -1,0 +1,1 @@
+The error lies in start recruiting to a point I had it that it made a replica of the sample output until time 13. But then I tried to follow the guidelines and use the add_pointer method and everything got worse and I couldnt go back.
