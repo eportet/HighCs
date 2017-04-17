@@ -10,45 +10,33 @@
 #include "CartPoint.h"
 #include <iostream>
 
-class Model;
+class Model; // Forward declaration of model
+
+using namespace std;
 
 class GameObject
 {
-public:
-	// Constructors
-	GameObject(char, int);
-	GameObject(char, int, CartPoint);
-	virtual ~GameObject();
-
-	// Public member funtions
-	// Getter Functions
-	CartPoint get_location();
-	int get_id();
-	char get_display_code();
-	char get_state();
-	virtual bool is_alive();
-
-	void set_location(double, double);
-	void set_id(int);
-
-	// View Functions
-	void drawself(char *);
-
-	// Status Functions
-	virtual void show_status();
-	virtual bool update() = 0; // Pure virtual function
-
-	// GameSaves
-	void save(ofstream&);
-	void restore(ifstream&, Model&);
+private:
+	int id_num;
 
 protected:
 	CartPoint location;
 	char display_code;
 	char state;
 
-private:
-	int id_num;
+public:
+	// Constructors
+	GameObject();
+	GameObject(char, int);
+	GameObject(char, int, CartPoint);
+	virtual ~GameObject();
+
+	// Public member funtions
+	CartPoint get_location();
+	int get_id();
+	virtual void show_status();
+	virtual bool update() = 0; // Pure virtual function
+	void drawself(char *);
 };
 
 #endif

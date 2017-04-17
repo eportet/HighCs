@@ -1,18 +1,12 @@
 // Sailor.cpp
-// PA4 EC327 Fall 2015
+// PA3 EC327 Fall 2015
 // Name: Eduardo Portet
 // BUID: U8049227
-// Date: December 10, 2015
+// Date: November 21, 2015
 
+#include "Dock.h"
 #include <iostream>
 #include <cmath>
-#include <fstream>
-#include "GameObject.h"
-#include "Sailor.h"
-#include "Dock.h"
-#include "Port.h"
-#include "Model.h"
-#include "Merchant.h"
 
 using namespace std;
 
@@ -20,50 +14,28 @@ using namespace std;
 // CONSTRUCTORS //
 //				//
 
-// Default constructor sets everything to initial values and the display code
-Sailor::Sailor(char in_disp, Model* in_model) : GameObject(in_disp, 0)
+// Default constructor sets everything to initial values
+Sailor::Sailor() : GameObject('S', 0)
 {
-	state = 'h';
-	health = 60;
+	state = 'a';
+	health = 25;
 	size = 15;
 	hold = 100;
 	cargo = 0;
-	world = in_model;
 	destination = CartPoint();
-	port = NULL;
-	dock = NULL;
-	hideout = NULL;
 	cout << "Sailor default constructed" << endl;
 }
 
 // Set everything to initial values except for ID and hideout
-Sailor::Sailor(char in_disp, int in_id, Dock* in_hideout, Model *in_model) : GameObject(in_disp, in_id, in_hideout->get_location())
+Sailor::Sailor(int in_id, Dock* in_hideout) : GameObject('S', in_id, in_hideout->get_location())
 {
 	state = 'h';
-	health = 60;
+	health = 25;
 	size = 15;
 	hold = 100;
 	cargo = 0;
-	world = in_model;
 	hideout = in_hideout;
 	destination = in_hideout->get_location();
-	port = NULL;
-	dock = NULL;
-	cout << "Sailor constructed" << endl;
-}
-
-// Constructor for Pirate
-Sailor::Sailor (char in_disp, int in_id, CartPoint in_loc, Model* in_model) : GameObject(in_disp, in_id, in_loc)
-{
-	state = 'h';
-	health = 60;
-	size = 15;
-	hold = 100;
-	cargo = 0;
-	world = in_model;
-	destination = CartPoint();
-	port = NULL;
-	dock = NULL;
 	cout << "Sailor constructed" << endl;
 }
 
@@ -77,24 +49,9 @@ Sailor::~Sailor()
 // MEMBER FUNCTIONS //
 //					//
 
-double Sailor::get_speed()
-{
-	if (get_display_code() == 'M')
-		return ((1/size)*health*4);
-	else if (get_display_code() == 'R')
-		return 0;
-	else
-		return (size - (cargo*.1));
-}
-
 double Sailor::get_size()
 {
 	return size;
-}
-
-double Sailor::get_presize()
-{
-	return presize;
 }
 
 double Sailor::get_cargo()
@@ -102,14 +59,36 @@ double Sailor::get_cargo()
 	return cargo;
 }
 
-double Sailor::get_health()
+double Sailor::get_speed()
 {
-	return health;
+	return (size - (cargo*.1));
 }
 
-int Sailor::get_h_id()
+// Updates the objects location
+bool Sailor::update_location()
 {
-	return hideout->get_id();
+	// check whether it is within one step of destination
+	if ((fabs(destination.x - location.x) <= fabs(delta.x) && fabs(destination.y - location.y) <= fabs(delta.y)) || (location.x == destination.x && location.y == destination.y))
+	{
+		// if it is sets the location to the destination
+		// prints arrived message and returns true
+		location = destination;
+		cout << display_code << get_id() << ": I’m there!\n";
+		return true;
+	}
+	// if it is not within 1 step adds delta to location
+	// prints moved message and returns false
+	location = location + delta;
+	cout << display_code << get_id() << ": Just keep sailing...\n";
+	
+	return false;
+}
+
+// Sets destination and calculates the delta value
+void Sailor::setup_destination(CartPoint dest)
+{
+	destination = dest;
+	delta = (destination - location)*(get_speed()/cart_distance(destination, location));
 }
 
 // Returns true if the sailor is at the hideout
@@ -120,41 +99,27 @@ bool Sailor::is_hidden()
 	return false;
 }
 
-bool Sailor::is_alive()
-{
-	if (state == 'x')
-		return false;
-
-	return true;
-}
-
 // Tells the sailor to move to a point
 void Sailor::start_sailing(CartPoint dest)
 {
-	if (is_alive())
-	{
-		if (state == 'd')
-			dock->set_sail(this);
+	if (state == 'd')
+		dock->set_sail(this);
 	
-		setup_destination(dest);
-		state = 's';
-		cout << display_code << get_id() << ": On my way\n";
-	}
+	setup_destination(dest);
+	state = 's';
+	cout << display_code << get_id() << ": On my way\n";
 }
 
 // Tells the sailor to start supplying at the given port
 void Sailor::start_supplying(Port* destPort)
 {
-	if (is_alive())
-	{
-		if (state == 'd')
+	if (state == 'd')
 		dock->set_sail(this);
 
 	port = destPort;
 	setup_destination(port->get_location());
 	state = 'o';
 	cout << display_code << get_id() << ": Supplies here I come!\n";
-	}
 }
 
 // Tells the sailor to go to hideout
@@ -174,23 +139,11 @@ void Sailor::start_docking(Dock* destDock)
 	if (this->state == 'd')
 		dock->set_sail(this);
 
+
 	dock = destDock;
-	presize = size;
 	setup_destination(dock->get_location());
 	state = 'i';
 	cout << display_code << get_id() << ": Off to Dock\n";
-}
-
-// Virtual function of start plunder
-void Sailor::start_plunder(Sailor* target)
-{
-	cout << "I cannot plunder.\n";
-}
-
-// Virtual function of start recruiting
-void Sailor::start_recruiting(Sailor* target)
-{
-	cout << "I cannot recruit.\n";
 }
 
 // Tells the sailor to stop an anchor
@@ -203,42 +156,14 @@ void Sailor::anchor()
 	cout << display_code << get_id() << ": Dropping anchor\n";
 }
 
-// Virtual function of start plunder
-void Sailor::get_plundered(int attack_strength)
-{
-	state = 'a';
-	health -= attack_strength;
-	if (health <= 0)
-	{
-		state = 'x';
-		cout << "Oh no, now I’m in Davy Jones’ Locker!\n";
-	}
-	else
-		cout << "Ouch!\n";
-}
-
 // returns true if an event happens
 bool Sailor::update()
 {
 	switch (state)
 	{
+		case 'a':
 		case 'd':
 		case 't':
-		case 'x':
-		case 'r':
-			return false;
-
-		case 'a':
-			if (is_hidden() && health > 5)
-			{
-				health = health - 5;
-			}
-			else if (is_hidden() && health <= 5)
-			{
-				health = 0;
-				state = 'x';
-				return true;
-			}
 			return false;
 
 		case 's':
@@ -370,85 +295,8 @@ void Sailor::show_status()
 			break;
 
 		default:
+			cout << "Unknown state" << endl;
 			break;
 	}
 }
-
-// Updates the objects location
-bool Sailor::update_location()
-{
-	// check whether it is within one step of destination
-	if ((fabs(destination.x - location.x) <= fabs(delta.x) && fabs(destination.y - location.y) <= fabs(delta.y)) || (destination == location))
-	{
-		// if it is sets the location to the destination
-		// prints arrived message and returns true
-		this->location = destination;
-		cout << display_code << get_id() << ": I'm there!\n";
-		return true;
-	}
-	// if it is not within 1 step adds delta to location
-	// prints moved message and returns false
-	location = location + delta;
-	cout << display_code << get_id() << ": Just keep sailing...\n";
-	
-	return false;
-}
-
-// Sets destination and calculates the delta value
-void Sailor::setup_destination(CartPoint dest)
-{
-	this->destination = dest;
-	this->delta = (destination - location)*(get_speed()/cart_distance(destination, location));
-}
-
-// GameSaves
-void Sailor::save(ofstream& file)
-{
-	GameObject::save(file);
-
-	file << health << size << presize << hold << cargo << destination.x << destination.y << delta.x << delta.y; 
-	
-	if (port == NULL)
-		file << -1;
-	else
-		file << port->get_id();
-
-	if (dock == NULL)
-		file << -1;
-	else
-		file << dock->get_id();
-	
-	if (hideout == NULL)
-		file << -1;
-	else
-		file << hideout->get_id();
-}
-
-void Sailor::restore(ifstream& file, Model& model)
-{
-	world = &model;
-
-	int port_id;
-	int dock_id;
-	int hideout_id;
-
-	GameObject::restore(file, model);
-	file >> health >> size >> presize >> hold >> cargo >> destination.x >> destination.y >> delta.x >> delta.y >> port_id >> dock_id >> hideout_id;
-
-	if (port_id == -1)
-		port = NULL;
-	else
-		port = (*world).get_Port_ptr(port_id);
-
-	if (dock_id == -1)
-		dock = NULL;
-	else
-		dock = world->get_Dock_ptr(dock_id);
-
-	if (hideout_id == -1)
-		hideout = NULL;
-	else
-		hideout = world->get_Dock_ptr(hideout_id);
-}
-
 

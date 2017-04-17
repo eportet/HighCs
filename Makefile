@@ -3,11 +3,20 @@
 GCC = g++ 
 
 
-HighCs: PA4.o GameObject.o Sailor.o Dock.o Port.o CartPoint.o CartVector.o Model.o View.o GameCommand.o Merchant.o Pirate.o
-	${GCC} PA4.o GameObject.o Sailor.o Dock.o Port.o CartPoint.o CartVector.o Model.o View.o GameCommand.o Merchant.o Pirate.o -o HighCs
+HighCs: pa3.o GameObject.o Sailor.o Dock.o Port.o CartPoint.o CartVector.o Model.o View.o GameCommand.o
+	${GCC} pa3.o GameObject.o Sailor.o Dock.o Port.o CartPoint.o CartVector.o Model.o View.o GameCommand.o -o HighCs
 
-PA4.o: PA4.cpp
-	${GCC} -c PA4.cpp
+#c1: CartPoint.o CartVector.o TestCheckPoint1.o
+#	${GCC} CartPoint.o CartVector.o TestCheckPoint1.o -o c1
+
+#c2: CartPoint.o CartVector.o GameObject.o Port.o TestCheckPoint2.o
+#	${GCC} CartPoint.o CartVector.o GameObject.o Port.o TestCheckPoint2.o -o c2
+
+#c3: CartPoint.o CartVector.o GameObject.o Port.o Dock.o Sailor.o TestCheckPoint3.o
+#	${GCC} CartPoint.o CartVector.o GameObject.o Port.o Dock.o Sailor.o TestCheckPoint3.o -o c3
+
+pa3.o: pa3.cpp
+	${GCC} -c pa3.cpp
 
 GameObject.o: GameObject.cpp
 	${GCC} -c GameObject.cpp
@@ -15,20 +24,15 @@ GameObject.o: GameObject.cpp
 Sailor.o: Sailor.cpp
 	${GCC} -c Sailor.cpp
 
-Merchant.o: Merchant.cpp
-	${GCC} -c Merchant.cpp
-
-Pirate.o: Pirate.cpp
-	${GCC} -c Pirate.cpp
-
 Dock.o: Dock.cpp
 	${GCC} -c Dock.cpp
 
 Port.o: Port.cpp
 	${GCC} -c Port.cpp
 
-#Kraken.o: Kraken.cpp
-#	${GCC} -c Kraken.cpp
+
+TestCheckPoint1.o: TestCheckPoint1.cpp
+	${GCC} -c TestCheckPoint1.cpp
 
 CartPoint.o: CartPoint.cpp
 	${GCC} -c CartPoint.cpp
@@ -46,4 +50,4 @@ GameCommand.o: GameCommand.cpp
 	${GCC} -c GameCommand.cpp
 
 clean:
-	rm PA4.o GameObject.o Sailor.o Dock.o Port.o Merchant.o Pirate.o CartPoint.o CartVector.o Model.o View.o GameCommand.o HighCs  
+	rm pa3.o GameObject.o Sailor.o Dock.o Port.o CartPoint.o CartVector.o Model.o View.o GameCommand.o HighCs  

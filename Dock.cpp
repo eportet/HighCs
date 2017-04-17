@@ -4,14 +4,12 @@
 // BUID: U8049227
 // Date: November 21, 2015
 
-#include <iostream>
-#include <fstream>
-#include "GameObject.h"
 #include "Dock.h"
-#include "Sailor.h"
-#include "Model.h"
+#include <iostream>
 
 using namespace std;
+
+double original;
 
 //				//
 // CONSTRUCTORS //
@@ -43,17 +41,13 @@ Dock::~Dock()
 // MEMBER FUNCTIONS //
 //					//
 
-double Dock::get_berths()
-{
-	return berths;
-}
-
 // returns true if the sailor can dock and false otherwise
 bool Dock::dock_boat(Sailor* sailor_to_dock)
 {
 	if (berths >= sailor_to_dock->get_size())
 	{
-		berths -= sailor_to_dock->get_size();
+		original = sailor_to_dock->get_size();
+		berths -= original;
 		return true;
 	}
 	return false;
@@ -64,7 +58,7 @@ bool Dock::set_sail(Sailor* sailor_to_sail)
 {
 	if (sailor_to_sail->get_cargo() == 0)
 	{
-		berths += sailor_to_sail->get_presize();
+		berths += original;
 		return true;
 	}
 	return false;
@@ -98,17 +92,4 @@ void Dock::show_status()
 	GameObject::show_status();
 	cout << " has " << berths << " berths\n";
 }
-
-void Dock::save(ofstream& file)
-{
-	GameObject::save(file);
-	file << berths;
-}
-
-void Dock::restore(ifstream& file, Model& model)
-{
-	GameObject::restore(file, model);
-	file >> berths;
-}
-
 

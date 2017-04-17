@@ -4,17 +4,23 @@
 // BUID: U8049227
 // Date: November 21, 2015
 
-
 #include "GameObject.h"
 #include "Model.h"
 #include <iostream>
-#include <fstream>
 
 using namespace std;
 
 //				//
 // CONSTRUCTORS //
 //				//
+
+GameObject::GameObject()
+{
+	display_code = '0';
+	state = '0';
+	id_num = 0;
+	cout << "GameObject default constructed" << endl;
+}
 
 // Default constructor sets location to (0,0)
 GameObject::GameObject(char in_code, int in_id)
@@ -44,42 +50,24 @@ GameObject::~GameObject()
 // MEMBER FUNCTIONS //
 //					//
 
+// Returns the location of object
 CartPoint GameObject::get_location()
 {
 	return location;
 }
 
+// Returns the id of object
 int GameObject::get_id()
 {
 	return id_num;
 }
 
-char GameObject::get_display_code()
+// Outputs the information of the object
+void GameObject::show_status()
 {
-	return display_code;
+	cout << display_code << " with ID " << get_id() << " at location " << location;
 }
 
-char GameObject::get_state()
-{
-	return state;
-}
-
-bool GameObject::is_alive()
-{
-	return true;
-}
-
-void GameObject::set_location(double x, double y)
-{
-	location = CartPoint(x,y);
-}
-
-void GameObject::set_id(int id)
-{
-	id_num = id;
-}
-
-// Provides location in grid
 void GameObject::drawself(char* grid)
 {
 	// Assign display code
@@ -96,25 +84,6 @@ void GameObject::drawself(char* grid)
 		*(grid + 1) = char_id;
 	}
 }
-
-// Outputs the information of the object
-void GameObject::show_status()
-{
-	cout << display_code << " with ID " << get_id() << " at location " << location;
-}
-
-// GameSaves
-void GameObject::save(ofstream& file)
-{
-	// Write Display Code, ID number, Location at X, Location at Y, State
-	file << display_code << id_num << location.x << location.y << state;
-}
-
-void GameObject::restore(ifstream& file, Model& model)
-{
-	file >> display_code >> id_num >> location.x >> location.y >> state;
-}
-
 
 
 

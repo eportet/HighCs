@@ -8,8 +8,9 @@
 #define PORT_H
 
 #include "GameObject.h"
+#include <iostream>
 
-class Model;
+using namespace std;
 
 class Port: public GameObject
 {
@@ -25,13 +26,8 @@ public:
 	// Public member functions
 	bool is_empty();
 	double provide_supplies(double amount_to_provide = 50);
-
 	bool update();
 	void show_status();
-
-	void save(ofstream&);
-	void restore(ifstream&, Model&);
-	
 };
 
 #endif
